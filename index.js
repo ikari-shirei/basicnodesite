@@ -1,49 +1,17 @@
-const http = require('http')
-var fs = require('fs')
+const express = require('express')
+const app = express()
+const path = require('path')
 
 const hostname = '127.0.0.1'
 const port = 8080
 
-const server = http.createServer((req, res) => {
-  if (req.url === '/' || req.url === '/index.html') {
-    fs.readFile('./index.html', (err, html) => {
-      if (err) throw err
+app.use(express.static(path.join(__dirname, 'public')))
 
-      res.statusCode = 200
-      res.setHeader('Content-Type', 'text/html')
-      res.write(html)
-      res.end()
-    })
-  } else if (req.url === '/about.html') {
-    fs.readFile('./about.html', (err, html) => {
-      if (err) throw err
-
-      res.statusCode = 200
-      res.setHeader('Content-Type', 'text/html')
-      res.write(html)
-      res.end()
-    })
-  } else if (req.url === '/contact-me.html') {
-    fs.readFile('./contact-me.html', (err, html) => {
-      if (err) throw err
-
-      res.statusCode = 200
-      res.setHeader('Content-Type', 'text/html')
-      res.write(html)
-      res.end()
-    })
-  } else {
-    fs.readFile('./404.html', (err, html) => {
-      if (err) throw err
-
-      res.statusCode = 404
-      res.setHeader('Content-Type', 'text/html')
-      res.write(html)
-      res.end()
-    })
-  }
+app.get('*', function (req, res) {
+  res.sendFile('404.html', { root: '.' })
+  res.status(404)
 })
 
-server.listen(port, hostname, () => {
+app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`)
 })
